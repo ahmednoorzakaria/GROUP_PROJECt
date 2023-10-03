@@ -1,0 +1,56 @@
+/* Main background color */
+body {
+    background-color:#1DB954;
+  }
+  
+  /* Login page styling */
+  .card {
+    background-color:black;
+    color: white;
+    padding: 20px;
+    margin: 20px;
+    
+  }
+  
+  .card-header {
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .form-control {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .text-danger {
+    color: white;
+  }
+  
+/* Increase button size */
+.btn-primary {
+  font-size: 18px;
+  padding: 10px 20px;
+}
+
+/* Increase the size of the "Forgot Password?" link */
+.mt-3 a {
+  font-size: 16px;
+}
+
+/* Increase the size of social media login buttons */
+.btn-social-media {
+  font-size: 24px;
+  padding: 10px 20px;
+  margin-right: 10px;
+}
+/* Styling for the Spotify logo */
+.spotify-logo {
+  height: 30px; /* Adjust the height as needed */
+  margin-right: 10px; /* Add spacing between the logo and text */
+}

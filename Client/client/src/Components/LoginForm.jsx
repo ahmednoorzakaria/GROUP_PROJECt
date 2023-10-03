@@ -2,7 +2,7 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaGoogle, FaFacebook, FaLinkedin, FaInstagram } from 'react-icons/fa';
-
+import './App.css';
 
 function LoginForm() {
   const initialValues = {
