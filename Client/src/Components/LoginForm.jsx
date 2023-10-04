@@ -1,127 +1,81 @@
-import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { FaGoogle, FaFacebook, FaLinkedin, FaInstagram } from 'react-icons/fa';
+import React, { useState } from "react";
 
-
-function LoginForm() {
-  const initialValues = {
+function Login() {
+  const [formData, setFormData] = useState({
     username: "",
-    email: "",
     password: "",
+  });
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const handleInputChange = (event) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
   };
 
-  const validationSchema = Yup.object().shape({
-    username: Yup.string().required("Username is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
-    password: Yup.string().required("Password is required"),
-  });
+  const handleLogin = async (event) => {
+    event.preventDefault();
 
-  const handleSubmit = (values, { setSubmitting }) => {
-    setTimeout(() => {
-      console.log("Logging in with:", values);
-    
-    }, 1000);
-    setSubmitting(false);
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      // Handle the response from the backend
+      if (response.ok) {
+        // Successful login
+        const data = await response.json();
+        setMessage(data.message);
+        setError("");
+      } else {
+        // Error occurred
+        const errorData = await response.json();
+        setError(errorData.message);
+        setMessage("");
+      }
+    } catch (error) {
+      // Handle any network or other errors
+      setError("An error occurred. Please try again later.");
+      setMessage("");
+    }
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-header">Log in</div>
-            <div className="card-body">
-              <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={handleSubmit}
-              >
-                {({ isSubmitting }) => (
-                  <Form>
-                    <div className="mb-3">
-                      <label htmlFor="username" className="form-label">
-                        Username
-                      </label>
-                      <Field
-                        type="text"
-                        name="username"
-                        className="form-control"
-                        placeholder="Username"
-                      />
-                      <ErrorMessage
-                        name="username"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
-
-                    <div className="mb-3">
-                      <label htmlFor="email" className="form-label">
-                        Email
-                      </label>
-                      <Field
-                        type="email"
-                        name="email"
-                        className="form-control"
-                        placeholder="Enter your email"
-                      />
-                      <ErrorMessage
-                        name="email"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
-
-                    <div className="mb-3">
-                      <label htmlFor="password" className="form-label">
-                        Password
-                      </label>
-                      <Field
-                        type="password"
-                        name="password"
-                        className="form-control"
-                        placeholder="Enter your password"
-                      />
-                      <ErrorMessage
-                        name="password"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
-
-                    <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                      Login
-                    </button>
-                  </Form>
-                )}
-              </Formik>
-              <div className="mt-3">
-                <a href="/forgot-password">Forgot Password?</a>
-              </div>
-              <div className="mt-3">
-                      {/* Social media login buttons with Font Awesome icons */}
-                      <button className="btn btn-danger me-2">
-                        <FaGoogle /> 
-                      </button>
-                      <button className="btn btn-primary me-2">
-                        <FaFacebook /> 
-                      </button>
-                      <button className="btn btn-info me-2">
-                        <FaLinkedin /> 
-                      </button>
-                      <button className="btn btn-secondary me-2">
-                        <FaInstagram /> 
-                      </button>
-                    </div>
-                  
-              {/* ... (unchanged "Forgot Password?" link) */}
-            </div>
-          </div>
+    <div>
+      <h2>Login</h2>
+      {message && <p>{message}</p>}
+      {error && <p>{error}</p>}
+      <form onSubmit={handleLogin}>
+        <div>
+          <label htmlFor="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            value={formData.username}
+            onChange={handleInputChange}
+          />
         </div>
-      </div>
+        <div>
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+          />
+        </div>
+        <button type="submit">Login</button>
+      </form>
     </div>
   );
 }
 
-export default LoginForm;
+export default Login;

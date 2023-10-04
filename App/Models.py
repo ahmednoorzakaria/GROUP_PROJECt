@@ -10,9 +10,9 @@ class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String)
-    email = db.Column(db.String)
-    password = db.Column(db.String)
+    username = db.Column(db.String(20) , unique = True , nullable = False)
+    email = db.Column(db.String(120) , unique = True , nullable = False)
+    password = db.Column(db.String(60) , nullable = False)
     created_at = db.Column(DateTime, default=func.now())
     updated_at = db.Column(DateTime, onupdate=func.now())
 
@@ -21,6 +21,9 @@ class User(db.Model, SerializerMixin):
         self.email = email
         self.password = generate_password_hash(password)
 
-class Playlist (db.model,SerializerMixin):
+class Playlist(db.Model, SerializerMixin):
     __tablename__ = "playlists"
+    
+    id = db.Column(db.Integer, primary_key=True)
+    # Add other columns here...
     
