@@ -1,32 +1,64 @@
-import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-// import { FaGoogle, FaFacebook, FaLinkedin, FaInstagram } from 'react-icons/fa';
-
+import React, { useState } from "react";
 
 function SignupForm() {
-  const initialValues = {
+  const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
-    confirmPassword: "", // Adding confirmPassword field for signup
+    confirmPassword: "",
+  });
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const validationSchema = Yup.object().shape({
-    username: Yup.string().required("Username is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
-    password: Yup.string().required("Password is required").min(8, "Password must be at least 8 characters"),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password"), null], "Passwords must match") // Password confirmation should match the password field
-      .required("Confirm Password is required"),
-  });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const handleSubmit = (values, { setSubmitting }) => {
-    setTimeout(() => {
-      console.log("Signing up with:", values);
-      // You can add your signup logic here, e.g., send the data to a server.
-    }, 1000);
-    setSubmitting(false);
+    try {
+      if (!formData.username || !formData.email || !formData.password) {
+        setError("All fields are required.");
+        return;
+      }
+
+      if (formData.password.length < 8) {
+        setError("Password must be at least 8 characters long.");
+        return;
+      }
+
+      if (formData.password !== formData.confirmPassword) {
+        setError("Passwords do not match.");
+        return;
+      }
+
+      const response = await fetch("/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || "Failed to create user.");
+        return;
+      }
+
+      // Clear form data and errors on success
+      setFormData({
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+      setError("");
+      console.log("User created successfully.");
+    } catch (error) {
+      console.error("Error creating user:", error.message);
+      setError("An error occurred while creating the user.");
+    }
   };
 
   return (
@@ -36,103 +68,73 @@ function SignupForm() {
           <div className="card">
             <div className="card-header">Sign up</div>
             <div className="card-body">
-              <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={handleSubmit}
-              >
-                {({ isSubmitting }) => (
-                  <Form>
-                    {/* Username field */}
-                    <div className="mb-3">
-                      <label htmlFor="username" className="form-label">
-                        Username
-                      </label>
-                      <Field
-                        type="text"
-                        name="username"
-                        className="form-control"
-                        placeholder="Username"
-                      />
-                      <ErrorMessage
-                        name="username"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
+              {error && <div className="alert alert-danger">{error}</div>}
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label htmlFor="username" className="form-label">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    name="username"
+                    className="form-control"
+                    placeholder="Username"
+                    value={formData.username}
+                    onChange={handleChange}
+                  />
+                </div>
 
-                    {/* Email field */}
-                    <div className="mb-3">
-                      <label htmlFor="email" className="form-label">
-                        Email
-                      </label>
-                      <Field
-                        type="email"
-                        name="email"
-                        className="form-control"
-                        placeholder="Enter your email"
-                      />
-                      <ErrorMessage
-                        name="email"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
+                <div className="mb-3">
+                  <label htmlFor="email" className="form-label">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    className="form-control"
+                    placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                </div>
 
-                    {/* Password field */}
-                    <div className="mb-3">
-                      <label htmlFor="password" className="form-label">
-                        Password
-                      </label>
-                      <Field
-                        type="password"
-                        name="password"
-                        className="form-control"
-                        placeholder="Enter your password"
-                      />
-                      <ErrorMessage
-                        name="password"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
+                <div className="mb-3">
+                  <label htmlFor="password" className="form-label">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    className="form-control"
+                    placeholder="Enter your password"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                </div>
 
-                    {/* Confirm Password field */}
-                    <div className="mb-3">
-                      <label htmlFor="confirmPassword" className="form-label">
-                        Confirm Password
-                      </label>
-                      <Field
-                        type="password"
-                        name="confirmPassword"
-                        className="form-control"
-                        placeholder="Confirm your password"
-                      />
-                      <ErrorMessage
-                        name="confirmPassword"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
+                <div className="mb-3">
+                  <label htmlFor="confirmPassword" className="form-label">
+                    Confirm Password
+                  </label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    className="form-control"
+                    placeholder="Confirm your password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                  />
+                </div>
 
-                    <button
-                      type="submit"
-                      className="btn btn-primary"
-                      disabled={isSubmitting}
-                    >
-                      Sign up
-                    </button>
-                  </Form>
-                )}
-              </Formik>
-              {}
-              
-              </div>
+                <button type="submit" className="btn btn-primary">
+                  Sign up
+                </button>
+              </form>
             </div>
           </div>
         </div>
       </div>
-    
+    </div>
   );
 }
 
