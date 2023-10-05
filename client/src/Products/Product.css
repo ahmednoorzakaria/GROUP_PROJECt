@@ -1,7 +1,7 @@
 /* Global Styles */
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
+    margin:0;
     padding: 0;
     background-color: #f2f2f2;
   }
@@ -47,13 +47,20 @@ body {
     padding-left: 270px; /* Adjust the padding to create space for the sidebar */
   }
   
-  /* Card Container Styles */
-  .card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start; /* Align products to the left */
-    margin-top: 20px;
-  }
+  
+/* Card Container Styles */
+/* Card Container Styles */
+.card-container {
+  display: flex;
+  padding-left:30rem; 
+  flex-wrap: wrap;
+  justify-content:space-around; /* Align products to the left */
+  margin-top: 20px;
+  max-width: calc(100% - 270px); /* Adjust for the width of the sidebar */
+  overflow-x: auto; /* Enable horizontal scrolling */
+}
+
+
   
   .card {
     width: calc(33.33% - 20px);
@@ -103,11 +110,18 @@ body {
       margin-bottom: 20px;
     }
   
-    .main-content {
-      margin-left: 0;
-      padding-left: 20px; /* Reset the padding for smaller screens */
-    }
-  
+    /* Main Content Styles */
+
+
+.main-content {
+  margin-left:250px; 
+  margin-right: 20px; 
+  padding: 20px;
+}
+/* Keep a fixed left margin for the sidebar */
+
+/* Add right margin to center content */
+
     .card {
       width: 100%;
     }
