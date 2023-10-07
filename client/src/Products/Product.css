@@ -9,8 +9,8 @@ body {
   /* Sidebar Styles */
   .sidebar {
     width: 250px;
-    background-color: #333;
-    color: #fff;
+    background-color: grey;
+    color: black;
     padding: 20px;
     position: fixed;
     height: 100%;
