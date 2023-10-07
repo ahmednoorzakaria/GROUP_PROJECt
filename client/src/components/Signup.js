@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./signup.css";
+import { useNavigate } from "react-router-dom";
 
 function SignUp() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -9,9 +10,14 @@ function SignUp() {
     email: "",
     password: ""
   });
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate(); // Initialize the navigate function
 
   const toggleCard = () => {
     setIsSignUp(!isSignUp);
+    // Clear any previous error message when switching between Sign Up and Sign In
+    setError("");
   };
 
   const handleInputChange = (e) => {
@@ -21,7 +27,7 @@ function SignUp() {
 
   const handleSignup = () => {
     const data = userData;
-  
+
     fetch('/signup', {
       method: 'POST',
       headers: {
@@ -33,18 +39,25 @@ function SignUp() {
       .then(data => {
         console.log(data.message); // Success message from Flask
         if (data.message === 'User created successfully.') {
-          // If sign-up is successful, automatically switch to sign-in
+          // If sign-up is successful, clear any previous error message
+          setError("");
+          // Automatically switch to sign-in
           toggleCard();
+        } else {
+          // Set the error message received from the server
+          setError(data.message);
         }
       })
       .catch(error => {
         console.error(error.message); // Error message from Flask
+        // Set a custom error message for network errors
+        setError("Network error. Please try again later.");
       });
   };
 
   const handleSignIn = () => {
     const data = {
-      username: userData.username,
+      email: userData.email,
       password: userData.password
     };
 
@@ -55,12 +68,16 @@ function SignUp() {
       },
       body: JSON.stringify(data)
     })
-      .then(response => response.text())
+      .then(response => response.json())
       .then(data => {
-        console.log(data); // Success message from Flask
+        console.log(data.message); // Success message from Flask
+        if (data.message === 'Logged in successfully.') {
+          // If sign-in is successful, redirect to the home route
+          navigate('/');
+        }
       })
       .catch(error => {
-        console.error(error.message); // Error message from Flask
+        console.error(error.message);
       });
   };
 
@@ -152,6 +169,7 @@ function SignUp() {
                 onChange={handleInputChange}
               />
             </label>
+            {error && <div className="error-message">{error}</div>}
             <button type="button" className="submit" onClick={handleSignup}>
               Sign Up
             </button>
@@ -163,5 +181,3 @@ function SignUp() {
 }
 
 export default SignUp;
-
-

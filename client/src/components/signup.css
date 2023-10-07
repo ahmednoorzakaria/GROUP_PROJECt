@@ -294,3 +294,8 @@ input {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
 }
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
