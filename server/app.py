@@ -7,7 +7,7 @@ import re
 
 
 
-from models import db, User,Product
+from models import db, User,Product,Category
 
 app = Flask(__name__)
 
@@ -76,6 +76,16 @@ def get_products():
     serialized_products = [product.to_dict() for product in products]
 
     return jsonify(serialized_products)
+@app.route("/api/products/<category>")
+def get_products_by_category(category):
+    try:
+        # Fetch products from the database by category
+        products = Product.query.filter_by(category_id=category).all()
+        # Serialize the products into a JSON response
+        serialized_products = [product.serialize() for product in products]
+        return jsonify(products=serialized_products)
+    except Exception as e:
+        return jsonify(error=str(e)), 500
 
        
 if __name__ == "__main__":
