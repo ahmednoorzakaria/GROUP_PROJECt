@@ -18,6 +18,7 @@ function App() {
     const apiUrl = "/products"; // Your Flask API endpoint for fetching products
 
     // Make the API request
+
     fetch(apiUrl)
       .then((response) => {
         if (!response.ok) {
@@ -35,6 +36,8 @@ function App() {
       });
   }, []); // The empty dependency array ensures the effect runs once when the component mounts
 
+  console.log(apiData)
+
   const handleInputChange = (event) => {
     setQuery(event.target.value);
   };
@@ -43,13 +46,27 @@ function App() {
     (product) =>
       product.title.toLowerCase().indexOf(query.toLowerCase()) !== -1
   );
+// kimemia is working on this 
+  const handleChange = async (event) => {
+    // setSelectedCategory(event.target.value)
+   console.log(event.target.value);
+   let myValue =event.target.value
+    const response = await fetch(`/api/products/${myValue}`);
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data_1 = await response.json();
+    setApiData(data_1);
+    
 
-  const handleChange = (event) => {
-    console.log(event.target.value);
+    
   };
+
+  console.log(selectedCategory)
 
   const handleClick = (event) => {
     setSelectedCategory(event.target.value);
+    console.log(selectedCategory)
   };
 
   function filteredData(selected, query) {
@@ -73,6 +90,7 @@ function App() {
     return filteredProducts.map(
       ({ img, title, star, reviews, prevPrice, newPrice }) => (
         <Card
+        
           key={Math.random()}
           img={img}
           title={title}
