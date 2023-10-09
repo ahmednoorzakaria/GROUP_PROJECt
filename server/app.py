@@ -80,12 +80,50 @@ def get_products():
 def get_products_by_category(category):
     try:
         # Fetch products from the database by category
-        products = Product.query.filter_by(category_id=category).all()
+        input_value=None
+        if category =="shirts":
+            input_value =1
+        elif category =="trousers":
+            input_value =2
+        elif category =="dresses":
+            input_value =3
+        elif category =="tops":
+            input_value=4
+        elif category =="underwear":
+            input_value =  5
+        elif category =="shoes":
+            input_value =6
+
+
+
+
+
+
+
+        products = Product.query.filter_by(category_id=input_value).all()
         # Serialize the products into a JSON response
-        serialized_products = [product.serialize() for product in products]
-        return jsonify(products=serialized_products)
+
+        product_list =[product.to_dict() for product in products]
+
+        response=make_response(jsonify(product_list),200)
+        return response
+
+        
+
+        # serialized_products = [product.serialize() for product in products]
+        # return jsonify(products=serialized_products)
     except Exception as e:
         return jsonify(error=str(e)), 500
+ #
+ # kimemia added another endpoint for the category endpoint 
+@app.route("/category/<name>",methods=['GET'])
+def getter(name):
+    category=Category.query.get(name)
+    response=make_response( jsonify(category.serialize()),200)
+    print(response)
+    return response
+
+ 
 
        
 if __name__ == "__main__":

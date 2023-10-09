@@ -15,7 +15,6 @@ function App() {
 
   useEffect(() => {
     const apiUrl = "/products"; 
-
     fetch(apiUrl)
       .then((response) => {
         if (!response.ok) {
@@ -31,6 +30,7 @@ function App() {
         console.error("Error fetching data:", error);
       });
   }, []); 
+
   const handleInputChange = (event) => {
     setQuery(event.target.value);
     console.log(event.target.value)
@@ -40,14 +40,27 @@ function App() {
     (product) =>
       product.title.toLowerCase().indexOf(query.toLowerCase()) !== -1
   );
+// kimemia is working on this 
+  const handleChange = async (event) => {
+    // setSelectedCategory(event.target.value)
+   console.log(event.target.value);
+   let myValue =event.target.value
+    const response = await fetch(`/api/products/${myValue}`);
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data_1 = await response.json();
+    setApiData(data_1);
+    
 
-  const handleChange = (event) => {
-    setSelectedCategory(event.target.value);
-    console.log(selectedCategory)
+
   };
+
+  console.log(selectedCategory)
 
   const handleClick = (event) => {
     setSelectedCategory(event.target.value);
+    console.log(selectedCategory)
   };
 
   function filteredData(selectedCategory, selectedColor, query) {
@@ -79,6 +92,7 @@ function App() {
         company,
       }) => (
         <Card
+        
           key={Math.random()}
           img={img}
           title={title}
