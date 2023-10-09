@@ -11,13 +11,11 @@ import SignUp from "./components/Signup";
 function App() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [query, setQuery] = useState("");
-  const [apiData, setApiData] = useState([]); // State to store fetched data
+  const [apiData, setApiData] = useState([]); 
 
   useEffect(() => {
-    // Define the API endpoint URL
-    const apiUrl = "/products"; // Your Flask API endpoint for fetching products
+    const apiUrl = "/products"; 
 
-    // Make the API request
     fetch(apiUrl)
       .then((response) => {
         if (!response.ok) {
@@ -26,17 +24,16 @@ function App() {
         return response.json();
       })
       .then((data) => {
-        // Handle the API response and update the state with the data
         setApiData(data);
+        console.log(data)
       })
       .catch((error) => {
-        // Handle errors if the API request fails
         console.error("Error fetching data:", error);
       });
-  }, []); // The empty dependency array ensures the effect runs once when the component mounts
-
+  }, []); 
   const handleInputChange = (event) => {
     setQuery(event.target.value);
+    console.log(event.target.value)
   };
 
   const filteredItems = apiData.filter(
@@ -45,33 +42,42 @@ function App() {
   );
 
   const handleChange = (event) => {
-    console.log(event.target.value);
+    setSelectedCategory(event.target.value);
+    console.log(selectedCategory)
   };
 
   const handleClick = (event) => {
     setSelectedCategory(event.target.value);
   };
 
-  function filteredData(selected, query) {
+  function filteredData(selectedCategory, selectedColor, query) {
     let filteredProducts = apiData;
-
+  
     if (query) {
       filteredProducts = filteredItems;
     }
-
-    if (selected) {
-      filteredProducts = filteredProducts.filter(
-        ({ category, color, company, newPrice, title }) =>
-          category === selected ||
-          color === selected ||
-          company === selected ||
-          newPrice === selected ||
-          title === selected
-      );
+  
+    if (selectedCategory) {
+      // Filter by category name
+      filteredProducts = filteredProducts.filter(({ category }) => category.name === selectedCategory);
     }
-
+  
+    if (selectedColor) {
+      filteredProducts = filteredProducts.filter(({ color }) => color === selectedColor);
+    }
+    
     return filteredProducts.map(
-      ({ img, title, star, reviews, prevPrice, newPrice }) => (
+      ({
+        img,
+        title,
+        star,
+        reviews,
+        prevPrice,
+        newPrice,
+        category,
+        color,
+        company,
+      }) => (
         <Card
           key={Math.random()}
           img={img}
@@ -80,10 +86,14 @@ function App() {
           reviews={reviews}
           prevPrice={prevPrice}
           newPrice={newPrice}
+          color={color}
+          company={company}
         />
       )
     );
   }
+  
+  
 
   return (
     <Router>
