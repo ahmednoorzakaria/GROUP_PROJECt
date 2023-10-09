@@ -57,8 +57,7 @@ body {
   justify-content:space-around; /* Align products to the left */
   margin-top: 20px;
   max-width: calc(100% - 270px); /* Adjust for the width of the sidebar */
-  overflow-x: auto; /* Enable horizontal scrolling */
-}
+  }
 
 
   
